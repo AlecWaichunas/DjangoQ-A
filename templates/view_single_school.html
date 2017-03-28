@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-primary class-panel">
+            <div class="panel-heading">
+                <h4 class="text-center"><span id="school_name">{{school.school_name}}</span><br><small>in</small><br><span id="school_state">{{school.state}}</span></h4>
+            </div>
+            <div class="panel-body">
+                <div id="school_view">
+                   
+                </div>
+            </div>
+        </div>
+        <div class="text-center pull-center">
+            {% for class in school.classes.all %}
+                <a class="text-white highlight-darkgrey" href="{% url 'class_view' class.id %}">
+                    <button class="school_class btn searchwrap hidden-xs hidden-sm hidden-md">
+                        <div class="row">
+    	  					<h5 class="text-primary"> {{ class.name }} </h5>
+    	  				</div>
+    	  				<div class="row">
+    	  					<p class="text-info"><b>{% if class.is_private %}Private{% else %}Public{% endif %}</b></p>
+    	  				</div>
+    	  				<div class="row">
+    	  					<p class="text-success"><b>Members: {{ class.members.count }}</b></p>
+    	  				</div>
+    	  				<div class="row searchwrap">
+    	  					<p class="text-info"> {{ class.description|truncatechars:50 }} </p>
+    	  				</div>
+                    </button>
+               </a>
+                <a class="text-white highlight-darkgrey" href="{% url 'class_view' class.id %}">
+                    <button class="full btn searchwrap visible-xs visible-sm visible-md question-bottom-align blue-border">
+                        <div class="row">
+    	  					<h5 class="text-primary"> {{ class.name }} </h5>
+    	  				</div>
+                    </button>
+               </a>
+            {% endfor %}
+        </div>
+        <br>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+     <a href="/c/{{ single_class.id }}">
+         <button class="btn btn-primary">
+             <span class="glyphicon glyphicon-arrow-left"></span>
+             Back to {{ single_class.name }}
+         </button>
+    </a>
+    <div><br></div>
+        <div class="panel panel-primary"> 
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="question-left-align">
+                        <h3> {{question.question_title}} <small> <b> Asked by {% if question.is_anon %} anonymous </b></small></h3> {% else %} {{question.asker}} </b></small></h3> {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="question-left-align question-right-align"><pre> {{ question.question_text }} </pre></div>
+                </div>
+                <div class="row">
+                    <div class="text-right">
+                        <div class="question-right-align">
+                            <a href="{% url 'vote_question' single_class.id question.id %}">
+                                <button class="btn {% if vote_question %}btn-success{% else %}btn-default{% endif %}" type="button">
+                                    Helpful <span class="badge"> {{question.points}} </span>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <p>Submitted {{ question.date_created|timesince }} ago</p>
+            </div>
+        </div>
+        {% if error_messages %}
+            <div class="alert alert-danger text-center">
+                {{ error_messages }}
+            </div>
+        {% endif %}
+
+    <!-- Submitting an answer -->
+    {% if not is_member %}
+            <button type="button" class="btn btn-warning dropdown-toggle col-xs-12 disabled"> 
+                Join class to answer the question
+                <span class="glyphicon glyphicon-triangle-bottom"></span>
+            </button>
+        {% else %}
+            <button type="button" class="btn btn-warning dropdown-toggle col-xs-12" id="answer_button"> 
+                Answer the question
+                <span class="glyphicon glyphicon-triangle-bottom"></span>
+            </button>
+            <div class="container col-xs-12" id="answertext">
+                <form action='' method='POST'> {% csrf_token %}
+                    
+                    <div class="row">
+                        <textarea class="answer-area full" type="text" name="answer_text" placeholder="Type your answer" maxlength="5000"></textarea>
+                    </div>
+                    <div class="row text-right">
+                        <label class="btn btn-info"> answer anonymously?
+            				<span class="badge">
+            					 <input class="class-checkbox" type='checkbox' name='is_anon' checked></input>
+            					 <div class="class-checkmark  glyphicon glyphicon-ok"></div>
+            					    
+            				</span>
+        			    </label>
+                    </div>
+                    <div class="row text-right">
+                        <input class='btn btn-default' type='submit' name="submit_answer" id="answerSubmit" value='Submit your answer'></input>
+                    </div>
+                </form>
+            </div>
+    {% endif %}
+    
+    <!-- For errors in voting -->
+    
+   <div class="row"><br><br><br></div>
+    
+    {% if answers.exists %}
+        {% for answer in answers %}
+            <div class="panel panel-info">
+                <div class="panel-body">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-4 col-md-1 question-right-align">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading well well-sm kill-margin">
+                                        <a href="{% url 'vote_answer' answer.id question.id 1 %}">
+                                            <button class="btn btn-success">
+                                                <span class="glyphicon glyphicon-thumbs-up" ></span>
+                                            </button>
+                                        </a>
+                                    </div>
+                                    <div class="panel-body text-center kill-margin">
+                                        <h3 class="kill-margin"> {{ answer.points }} </h3>
+                                    </div>
+                                    <div class="panel-footer well well-sm kill-margin">
+                                        <a href="{% url 'vote_answer' answer.id question.id 0 %}">
+                                            <button class="btn btn-danger">
+                                                <span class="glyphicon glyphicon-thumbs-down"></span>
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="well well-lg col-xs-7 col-md-10">
+                                <div class="answer-par">
+                                    <pre class="answer-par">{{ answer.text }}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-8 col-xs-12">
+                            
+                            <p style="margin-bottom: 0"><small>Submitted {{ answer.date_created|timesince }} ago</small><p>
+                            <h3 style="margin-top: -15px"><small><strong> By
+                                {% if answer.is_anon %}
+                                    Anonymous
+                                {% else %}
+                                    {{ answer.answerer }}
+                                {% endif %}
+                            </strong></small></h3>
+                            <h5>Comments:</h5>
+                    
+                            <div class="container">
+                                <ul style="list-style: none;">
+                                    {% if not answer.comments.exists %}
+                                        <li><strong>No comments</strong></li>
+                                    {% else %}
+                                        {% for comment in answer.comments.all %}
+                                            <li>
+                                                <p>
+                                                    {{ comment.text }}
+                                                    <b> 
+                                                        - {% if comment.is_anon %}Anonymous{% else %}{{ comment.commenter}}{% endif %}
+                                                    </b>
+                                                    <small>
+                                                        {{ comment.date_created|timesince }} ago
+                                                    </small>
+                                                </p>
+                                            </li>
+                                            <hr>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- comment button | modal -->
+                        <div class="col-md-4 col-xs-12">
+                            <div class="row">
+                                <div class="row text-center question-bot-align">
+                                    <div class="col-xs-12 btn-group">
+                                        {% if is_member %}
+                                        <button type="button" class="col-xs-12 btn btn-info comment_button question-right-align" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#comment-pop"> 
+                                            Comment
+                                        </button>
+                                        {% else %}
+                                        <button type="button" class="col-xs-12 btn btn-info comment_button question-right-align disabled" data-toggle="modal" aria-haspopup="true" aria-expanded="false" data-target="#comment-pop"> 
+                                            Join class to comment
+                                        </button>
+                                        {% endif %}
+                                        <div class="modal fade" id="comment-pop" role="dialog">
+                                            <div class="modal-dialog" style="top: 25%;">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h3>Comment</h3>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action='' method='POST'> {% csrf_token %}
+                                                        <div>
+                                                            <textarea class="comment-textarea" name="comment_text" maxlength="3000"></textarea>
+                                                        </div>
+                                                        <br>
+                                                        <input type="hidden" name="answer_id" value="{{ answer.id }}">
+                                                        <div class="text-right">
+                                                            <label class="btn btn-info"> comment anonymously
+                                    				            <span class="badge">
+                                                                    <input class="class-checkbox" type='checkbox' name='is_anon_comment' checked></input>
+                                                                    <div class="class-checkmark  glyphicon glyphicon-ok"></div>
+                                    				            </span>
+                                			                </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input class='btn btn-success' type='submit' name="submit_comment" value='Submit your comment'/>
+                                                    </div>
+                                                        </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+    {% else %}
+    <div class="container text-center">
+        <h3>No answers yet.</h3>
+    </div>
+    {% endif %}
+    
+         <a href="/c/{{ single_class.id }}">
+             <button class="btn btn-primary">
+                 <span class="glyphicon glyphicon-arrow-left"></span>
+                 Back to {{ single_class.name }}
+             </button>
+        </a>
+    <br>
+    <br>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="jumbotron">
+    <h2 class="text-center">Create an assignment</h2>
+        
+    {% if error_message %}
+        <div class="alert alert-danger text-center">{{error_message}}</div>
+    {% endif %}
+        
+    <form class="horizontal-form" action='' method='POST'> {% csrf_token %}
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <label for="question_title"><h4><small>Assignment</small></h4></label>
+        </div>
+        <div class="row pull-center">
+            <div class="col-xs-2"></div>
+            <input class="col-xs-8" type='text' name='assignment_text' maxlength="200"/>
+        </div>
+        <br>
+        <!--<div class="row">
+            <div class="col-xs-2"></div>
+            <button class="col-xs-2 btn btn-primary">Upload Photo</button>
+            <img class="col-xs-2 text-center imgUpload" src="" alt="1">
+            <img class="col-xs-2 text-center imgUpload" src="" alt="2">
+            <img class="col-xs-2 text-center imgUpload" src="" alt="3">
+        </div>-->
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <label for="questionarea"><h4><small>Details here</small></h4></label>
+        </div>
+        <div class="row pull-center">
+            <div class="col-xs-2"></div>
+            <textarea class="col-xs-8 assignment-area" id="questionarea" type='textarea' name='details' maxlength="2000"></textarea>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <div class="col-xs-8 text-right">
+                <label class="btn btn-info" style="margin-right: -15px;"> Post anonymously?
+    				<span class="badge">
+    					 <input class="class-checkbox" type='checkbox' id="question-anon" name='is_anon' checked></input>
+    					 <div class="class-checkmark  glyphicon glyphicon-ok"></div>
+    					    
+    				</span>
+    			</label>
+			</div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-2"></div>
+             <div class="col-xs-8 text-right">
+                 <button class="btn btn-primary" type='submit' value='Submit assignment' style="margin-right: -15px;">
+                     Post assignment
+                 </button>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>Page with ajax</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type='text/javascript'>
+            $(document).ready(function() {
+                $('#enter').click(function() {
+                    $.ajax({
+                         type: 'GET',
+                         url: '/create_post/',
+                         data: { text: $('#text_input').val() },
+                         success: function(data) {
+                             alert('success');
+                         },
+                         error: function() {
+                             alert('error');
+                         }
+                    })
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form id='post-form' method='POST'> {% csrf_token %}
+            <input type='text' id='text_input' placeholder='Text Input'/>
+            <input type='button' value='Enter' id='enter'/>
+        </form>
+    </body>
+</html>

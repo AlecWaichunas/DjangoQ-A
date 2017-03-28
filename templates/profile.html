@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  	<div class="text-center"><h2>{{ user }}</h2></div>
+    	<!--<div class="col-sm-2"><a href="/users" class="pull-right"><img title="profile image" class="img-circle img-responsive" src="http://www.gravatar.com/avatar/28fd20ccec6865e2d5f0e1f4446eb7bf?s=100"></a></div>-->
+    <div class="row">
+    	<div class="col-xs-12 col-sm-12 col-md-9">
+          
+          <ul class="nav nav-pills nav-justified" id="myTab">
+            <li class="active"><a href="#messages" data-toggle="pill">Messages</a></li>
+            <li class="visible-xs visible-sm"><a data-toggle="pill" href="#activity">Activity</a></li>
+            <!--<li><a href="#settings" data-toggle="tab">Settings</a></li>-->
+          </ul>
+              
+          <div class="tab-content">
+
+
+             
+             <!-- MESSAGES  -->
+             
+            <div class="tab-pane active" id="messages">
+               
+                <ul class="list-group">
+                  {% if profile_notifications.exists %}
+                    {% for profile_notification in profile_notifications %}
+                      <li class="list-group-item">
+                        <a href="{% url 'redirect_notifications' profile_notification.id %}" class="text-left">
+                          {{ profile_notification.message }} 
+                        </a>
+                        <span class="pull-right">{{ profile_notification.date|timesince }}</span>
+                      </li>
+                    {% endfor %}
+                  {% else %}
+                    <li class="list-group-item"><a href="" class="text-left">None</a></li>
+                  {% endif %}
+                </ul> 
+               
+             </div>
+             <div class="tab-pane" id="activity">
+                <ul class="list-group">
+                  <li class="list-group-item text-right"><span class="pull-left"><strong>Questions</strong></span>{{ question_count }}</li>
+                  <li class="list-group-item text-right"><span class="pull-left"><strong>Answers</strong></span>{{ answer_count }}</li>
+                  <li class="list-group-item text-right"><span class="pull-left"><strong>Points</strong></span>{{ user_profile.points }}</li>
+                </ul> 
+             </div>
+             <!--/tab-pane-->
+             
+             <!--<div class="tab-pane" id="settings">
+                <form class="form" action="##" method="post" id="registrationForm">
+                    <div class="col-xs-12"><h3>Account Info</h3></div>
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                              <label for="email"><h4>Email</h4></label>
+                              <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" title="enter your email.">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                              <label for="password"><h4>Password</h4></label>
+                              <input type="password" class="form-control" name="password" id="password" placeholder="password" title="enter your password.">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                            <label for="password2"><h4>Verify Password</h4></label>
+                              <input type="password" class="form-control" name="password2" id="password2" placeholder="password2" title="enter your password2.">
+                          </div>
+                      </div>
+                      <div class="col-xs-12"><h3>Personal Info</h3></div>
+
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                              <label for="first_name"><h4>First name</h4></label>
+                              <input type="text" class="form-control" name="first_name" id="first_name" placeholder="first name" title="enter your first name.">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                            <label for="last_name"><h4>Last name</h4></label>
+                              <input type="text" class="form-control" name="last_name" id="last_name" placeholder="last name" title="enter your last name if any.">
+                          </div>
+                      </div>
+          
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                              <label for="phone"><h4>Phone</h4></label>
+                              <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone" title="enter your phone number if any.">
+                          </div>
+                      </div>
+          
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                             <label for="mobile"><h4>Mobile</h4></label>
+                              <input type="text" class="form-control" name="mobile" id="mobile" placeholder="enter mobile number" title="enter your mobile number if any.">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                           <div class="col-xs-12">
+                                <br>
+                              	<button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                               	<button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+                            </div>
+                      </div>
+              	</form>
+               
+              </div><!--/tab-pane-->
+          </div><!--/tab-content-->
+        </div><!--/col-9-->
+        <div class="hidden-xs hidden-sm col-md-3"><!--left col-->
+            <ul class="fake-nav-tabs" id="myTab">
+              <li>Activity</li>
+            </ul>
+            <ul class="list-group">
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Questions</strong></span>{{ question_count }}</li>
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Answers</strong></span>{{ answer_count }}</li>
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Points</strong></span>{{ user_profile.points }}</li>
+            </ul> 
+  
+        </div><!--/col-3-->
+    </div><!--/row-->
+    <div class="row text-center hidden-xs">
+      <label><h3> Your Classes </h3></label>
+    </div>
+    <div class="row hidden-xs">
+      <div class="col-xs-1" id="left-scroll-1">
+        <button class="btn btn-primary home-left">
+          <span class="glyphicon glyphicon-menu-left"></span>
+        </button>
+      </div>
+      <div class="col-xs-10 row-alec" id="scroll-1">
+        {% for class in classes %}
+          <a href="{% url 'class_view' class.id %}">
+            <button class="btn btn-alec">
+              <div class="row text-center">
+                <h5 class="text-primary"> {{ class.name }} </h5>
+              </div>
+              <div class="row text-center">
+                <p class="text-success"><b>Members: {{ class.members.count }}</b></p>
+              </div>
+              <div class="row">
+                <p class="text-info"> {{ class.description|truncatechars:100 }} </p>
+              </div>
+            </button>
+          </a>
+        {% endfor %}
+      </div>
+      <div class="col-xs-1" id="right-scroll-1">
+      	<button class="btn btn-primary home-right">
+      		<span class="glyphicon glyphicon-menu-right"></span>
+      	</button>
+      </div>
+    </div>
+    <br>
+</div><!--container-->
+{% endblock %}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% include 'header.html' %}
+    <body>
+        
+        
+        
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#alecsNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>                        
+                          </button>
+                          <a class="navbar-brand" href="{% url 'index' %}"> {{ site_name }} </a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="alecsNavbar">
+                        <ul class="nav navbar-nav">
+                            {% if user.is_authenticated %}
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">My Classes <span class="caret"></span></a>
+                                    
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-header">Private</li>
+                                        {% if not classes_private %}
+                                            <li> <a><b>None</b></a></li>
+                                        {% else %}
+                                            {% for private in classes_private %}
+                                                <li class="text-white"><a class="text-white" href="{% url 'class_view' private.id %}">{{ private.name }}</a></li>
+                                            {% endfor %}
+                                        {% endif %}
+                                        <li role="separator" class="divider"></li>
+                                        <li class="dropdown-header">Public</li>
+                                        {% if not classes_public %}
+                                            <li> <a href="#"><b>None</b></a></li>
+                                        {% else %}
+                                            {% for public in classes_public %}
+                                                <li><a href="{% url 'class_view' public.id %}">{{ public.name }}</a></li>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <form class="navbar-form navbar-left hidden-xs" role="search" method='GET' action='/search/' style="width: 50%">
+                                <!--<div class="btn-group">-->
+                                   <!--<button style="width: 30px; height: 10px;" type="button" class="input-group-addon dropdown-toggle btn btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></button>-->
+                                    <!--<ul class="dropdown-menu search-dropdown">-->
+                                        <!--<li class="text-white text-center"><a>School</a></li>-->
+                                        <!--<li class="text-white text-center"><a>Class</a></li>-->
+                                        <!--<li class="text-white text-center"><a>Answer</a></li>-->
+                                        <!--<li class="text-white text-center"><a>Question</a></li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                                <div class="form-group" style="width: 85%">
+                                    <input type="text" name='query_text' class="form-control" placeholder="Search" style="width: 100%"/>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" ></span></button>
+                        </form>
+                        <ul class="nav navbar-nav navbar-right">
+                            {% if user.is_authenticated %}
+                                <li class="dropdown hidden-xs hidden-sm">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <b><span class="text-white glyphicon glyphicon-bell"><span class="badge">{{ notification_count }}</span></span></b>
+                                    </a>
+                                    <ul class="dropdown-menu notification-menu kill-margin kill-padding niotfication-list">
+                                        <li class="bg-white">
+                                            <p class="question-left-align question-right-align">
+                                                <b>Notifications</b>
+                                                <span class="pull-right">
+                                                    <a class="highlight-darkgrey" href="{% url 'profile' 1 %}">View all<span class="glyphicon glyphicon-triangle-right"></span></a>
+                                                </span>
+                                            </p>
+                                        </li>
+                                        {% if notifications.exists %}
+                                            {% for notification in notifications %}
+                                            <a class="text-white highlight-darkgrey" href="{% url 'redirect_notifications' notification.id %}">
+                                                <li class="bg-primary">
+                                                    <p class="question-left-align question-right-align">
+                                                            {{ notification.message }}
+                                                        <small class="text-muted"> {{ notification.date|timesince }} ago</small>
+                                                    </p>
+                                                </li>
+                                            </a>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="kill-margin kill-padding bg-primary"><p class="question-left-align question-right-align">None</p></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user }}<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="text-white" href="{% url 'profile' 0 %}">Profile</a></li>
+                                        <li><a class="text-white" href="/create_class/">Create Class</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a class="text-white" href="{% url 'logout' %}">Logout</a></li>
+                                    </ul>
+                                </li>
+                            <!-- <span class="sr-only">(current)</span> IDK what this is for -->
+                            {% else %}
+                                <li><a href="{% url 'register' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                                <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            {% endif %}
+                            <li>
+                                <!--This puts the searchbar on the bottom of mobile layout-->
+                                <form class="navbar-form visible-xs" role="search" method='GET' action='/search/'>
+                                    <input type="text" name='query_text' class="form-control" placeholder="Search" aria-describedby="basic-addon"/>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        
+        
+        {% block content %}
+        {% if not user.is_confirmed %}
+            <div class="alert alert-warning text-center">
+                Please verify your email to create or join classes.
+            </div>
+        {% endif %}
+        {% endblock %}
+        {% include 'footer.html' %}
+    </body>
+</html>

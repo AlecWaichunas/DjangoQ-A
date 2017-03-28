@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    </head>
+    <body>
+        <form id='post_form' action='/ajax_post/' method='POST'> {% csrf_token %}
+            <input type='text' id='text_input' name='text_input'/>
+            <input type='submit' value='Submit'/>
+        </form>
+        
+        <script type='text/javascript'>
+            $('#post_form').on('submit', function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '/ajax_post/',
+                    type: 'POST',
+                    data: { text: $('#text_input').text(), csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val() },
+                    success: function(data) {
+                        alert("success " + data);
+                    },
+                    error: function(data) {
+                        alert("Error " + data);
+                    },
+                });
+            });
+        </script>
+    </body>
+</html>

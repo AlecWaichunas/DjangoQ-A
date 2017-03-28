@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  	<div class="container">
+  	<!-- RECENT CLASSES-->
+		<br>
+  		<div class="row">
+  			
+  			<div class="col-md-3 hidden-xs hidden-sm">
+				<div class="panel panel-info">
+	                <div class="panel-heading">
+	                	<small><b>Recent Updates</b></small>
+	               	</div>
+	               	<div class="panel-body home-info">
+	               		{% for update in updates %}
+	               		<p><small><b class="text-primary">{{ update.title }}</b><div class="text-muted"> {{ update.date_created|timesince }} ago</div><br>{{ update.body }}</small></p>
+	               		<hr>
+	               		{% endfor %}
+	               	</div>
+	            </div>
+        	</div>
+  			
+  			<div class="col-xs-12 col-sm-12 col-md-9">
+  				{% if has_classes %}
+				<div class="panel panel-primary">
+	                <div class="panel-heading text-center">
+	                Recent Activity	
+	                </div>
+	                <div class="panel-body">
+	                {% for item in stream %}
+	                	{% if item.obj_type == 'q' %}
+	                	<a href="{% url 'view_single_question' item.parent_class.id item.id %}" class="kill-decor">
+                                    	
+                                    	
+                                    	<div>
+                                    		<div class="text-center text-primary kill-padding">
+                                    			
+	                                            <h4 class="kill-margin"><strong>{{ item.question_title|truncatechars:100 }}</strong></h4>
+	                                            <small class="kill-margin">was asked in {{ item.parent_class.name }} </small>
+	                                        </div>
+	                                       <div class="text-left" style="color: black;">    
+	                                        	<p class="searchwrap">{{ item.question_text|truncatechars:400}}</p>
+	                                        </div>
+
+                                    	</div>
+										{% if item.answers.count == 0 %}
+											<div class="bg-danger question-info-box">
+												<div class="row text-center text-warning">    
+                                                	<p class="badge full"><b>There are no answers, answer now!</b></p>
+                                            	</div>
+                                            </div>
+                                        {% else %}
+                                        	<div class="question-info-box">
+												<div class="row text-center text-primary">    
+                                                	<p class="badge full">There are {{ item.answers.count }} answers</p>
+                                            	</div>
+                                            </div>
+										{% endif %}
+                                </a>
+	                	{% endif %}
+	                	{% if item.obj_type == 'a' %}
+	            			<a href="{% url 'class_view' item.parent_class.id%}" class="kill-decor">
+	                            	
+	                            	<div>
+	                            		<div class="text-center text-primary kill-padding">
+	                                        <h4 class="kill-margin"><strong>{{ item.assignment |truncatechars:100 }} was assigned</strong></h4>
+	                                    	<small>was assigned in {{ item.parent_class.name }} </small>
+	                                    	<span class="full badge">4 people completed it</span>
+	                                    </div>
+	
+	                            	</div>
+	                        </a>
+	                	{% endif %}
+	                	{% if item.obj_type == 'd' %}
+	                		<a href="{% url 'view_single_question' item.parent_class.id item.id %}" class="kill-decor">
+	                            	<div>
+	                            		<div class="text-center text-primary kill-padding">
+	                                        <h4 class="kill-margin"><strong>{{ item.title |truncatechars:100 }}</strong></h4>
+	                                    	<small>is being discussed in {{ item.parent_class.name }} </small>
+	                                    	<span class="full badge">{{ item.replies.count }} have contributed</span>
+	                                    </div>
+	                            	</div>
+	                        </a>
+	                	{% endif %}
+	                {% endfor %}
+	                </div>
+	            </div>
+	            {% else %}
+	            <div class="panel panel-primary">
+	                <div class="panel-heading">
+	                Popular Classes
+	                </div>
+	                <div class="panel-body">
+	                {% for class in popular_classes %}
+	                <a class="kill-decor" href="{% url 'class_view' class.id  %}">
+	                    <div class="well well-sm">
+	                        <p class="text-primary"> <strong> {{ class.name }} </strong></p>
+	                        <p class="searchwrap text-muted"> {{ class.description|truncatechars:300 }} </p>
+	                    </div>
+				    </a>
+	                {% endfor %}
+	                </div>
+	            </div>
+	            {% endif %}
+            </div>
+			<!--<div class="col-md-3 hidden-xs hidden-sm">-->
+			<!--	<div class="panel panel-info">-->
+	  <!--              <div class="panel-heading text-center">-->
+	  <!--              	<small>Add your class in 3 simple steps!</small>-->
+	  <!--             	</div>-->
+	  <!--             	<div class="panel-body">-->
+	  <!--             		<p><small>1.) Click on your name in the navigation bar.</small></p>-->
+	  <!--             		<p><small>2.) Click create class.</small></p>-->
+	  <!--             		<p><small>3.) Fill out the form and add your class and school.</small></p>-->
+	  <!--             	</div>-->
+	  <!--          </div>-->
+   <!--     	</div>-->
+        </div>
+</div>
+
+{% endblock %}

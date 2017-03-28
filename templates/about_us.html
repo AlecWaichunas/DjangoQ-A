@@ -1,0 +1,80 @@
+</div><!DOCTYPE html>
+<html lang="en">
+    
+    {% include 'header.html' %}
+    <body id="clask-home">
+        <div class="alert alert-warning text-center" style="position: absolute; top: 0; width: 100%">Please be aware: We are in beta so some things may not behave properly. Thanks.</div>
+            <div class="container hidden-xs hidden-sm">
+                <div class="jumbotron pull-center text-center loggedOut-awesomeness">
+
+                    <h1 class="text-info text-center text-primary">Welcome to Clask!</h1>
+                            
+                    <b>The educational class-based Q and A website built by students for students.</b>
+                    <br>
+                    <br>
+                    <p>
+                        <small class="text-muted">
+                            We bring classes together to answer each other's questions and its all <b>free!</b>
+                        </small>
+                    </p>
+
+                    <div class="row hidden-xs">
+                        <a href="{% url 'login' %}">
+                            <button class="col-xs-5 btn btn-success btn-lg text-center" role="button">
+                                Login
+                            </button>
+                        </a>
+                        <h5 class="col-xs-2">or</h5>
+                        <a href="{% url 'register' %}" role="button">
+                            <button class="col-xs-5 btn btn-info btn-lg pull-center" role="button">
+                                Register
+                            </button>
+                        </a>
+                    </div>
+                    <div class="visible-xs">
+                        <a href="{% url 'login' %}">
+                            <button class="full btn btn-success btn-lg text-center" role="button">
+                                Login
+                            </button>
+                        </a>
+                        <h3 class="full">or</h3>
+                        <a href="{% url 'register' %}" role="button">
+                            <button class="full btn btn-info btn-lg pull-center" role="button">
+                                Register
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            <br>
+
+        </div>
+        <div class="container-fluid visible-xs visible-sm">
+            <h1 class="text-info text-center text-primary">Welcome to Clask!</h1>
+                            
+            <p class="text-center"><b>The educational class-based Q and A website built by students for students.</b></p>
+            <p class="text-center">
+                <small class="text-muted">
+                    We bring classes together to answer each other's questions and its all free!
+                </small>
+            </p>
+            <div style="position: absolute bottom: 0px;">
+                <a href="{% url 'login' %}">
+                    <button class="full btn btn-success btn-lg text-center" role="button">
+                        Login
+                    </button>
+                </a>
+                <h4 class="full text-center">or</h4>
+                <a href="{% url 'register' %}" role="button">
+                    <button class="full btn btn-info btn-lg pull-center" role="button">
+                        Register
+                    </button>
+                </a>
+            </div>
+        </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="/static/js/jquery.arctext.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/custom.js"></script>
+</body>
+</html>

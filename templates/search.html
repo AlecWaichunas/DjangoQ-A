@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class='main_content'>
+        <div class='container'>
+            <div class="row"><h3>
+                <span class="label label-primary kill-space"> 
+                    <span class="badge search-badge"> {{ total_results }} </span>
+                    search result{% if total_results != 1 %}s{% endif %} for "{{ query }}" <!--sorted by
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle kill-padding" data-toggle="dropdown" 
+                             aria-haspopup="true" aria-expanded="false">
+                             Most Relevant <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Most Relevant</a></li>
+                            <li><a href="#">Most Recent</a></li>
+                            <li><a href="#">Most Helpful</a></li>
+                         </ul>
+                     </div>-->
+                </span>
+            </h3></div>
+            <br>
+            {% if total_results == 0 %}
+                <div class="row"><h4><span class="label label-danger kill-space">Your search did not match anything, check your spelling.</span></h4></div>
+            {% else %}
+            
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <ul class="nav nav-pills nav-justified">
+                            {% if class_results != 0 %} 
+                                <li class="active">
+                                    <a class="white" data-toggle="pill" href="#classes">
+                                        <div class="row">
+                                            <span class="col-xs-2 badge question-left-align blue-border">{{ class_results }}</span> 
+                                            <span class="col-xs-7">Classes</span>
+                                        </div>
+                                    </a>
+                                </li> 
+                            {% endif %}
+                            
+                            {% if school_results != 0 %} 
+                                <li {% if class_results == 0 %} class="active" {% endif %} >
+                                    <a class="white" data-toggle="pill" href="#schools">
+                                        <div class="row">
+                                            <span class="col-xs-2 badge question-left-align blue-border">{{ school_results }}</span> 
+                                            <span class="col-xs-7">Schools</span>
+                                        </div>
+                                    </a>
+                                </li> 
+                            {% endif %}
+                            {% if question_results != 0 %} 
+                                <li {% if school_results == 0 and class_results == 0 %} class="active" {% endif %}>
+                                    <a class="white" data-toggle="pill" href="#questions">
+                                        <div class="row">
+                                            <span class="col-xs-2 badge question-left-align blue-border">{{ question_results }}</span> 
+                                            <span class="col-xs-7">Questions</span>
+                                        </div>
+                                    </a>
+                                </li> 
+                            {% endif %}
+                            {% if answer_results != 0 %}
+                                <li {% if school_results == 0 and class_results == 0 and question_results == 0 %} class="active" {% endif %}>
+                                    <a class="white" data-toggle="pill" href="#answers">
+                                        <div class="row">
+                                            <span class="col-xs-2 badge question-left-align blue-border">{{ answer_results }}</span> 
+                                            <span class="col-xs-7">Answers</span>
+                                        </div>
+                                    </a>
+                                </li> 
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            
+                            <div id="classes" class="tab-pane fade in {% if class_results != 0 %} active {% endif %}">
+                                {% for c in classes %}
+                                <!--
+                                    {% widthratio forloop.counter0 3 3 as val %}
+                                --><a href="{% url 'class_view' c.id  %}" class="kill-decor">
+                                        <div class="well well-sm searchClass{{ val }} kill-decor">
+                                            <p class="text-primary kill-decor"> <strong> {{ c.name }} </strong>{% if c.is_private %}<span class="label label-default">Private</span>{% else %}<span class="label label-success">Public</span>{% endif %}</p>
+                                            <p class="searchwrap text-muted kill-decor"> {{ c.description|truncatechars:300 }} </p>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            
+                            <div id="schools" class="tab-pane fade {% if class_results == 0 and school_results != 0 %} in active {% endif %}">
+                                {% for s in schools %}
+                                    <!--
+                                        {% widthratio forloop.counter0 3 3 as val %}
+                                    -->
+                                    <a href="{% url 'view_single_school' s.id %}" class="kill-decor">
+                                        <div class="well well-sm searchSschool{{ val }}">
+                                            <!-- ADD URL HERE TO DIRECT TO SCHOOL PAGE-->
+                                            <p class="searchwrap text-primary"> <strong> {{s.school_name|truncatechars:300}} </strong> in {{ s.state }}</p>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            
+                            <div id="questions" class="tab-pane fade {% if question_results != 0 and school_results == 0 and class_results == 0 %} in active {% endif %}">
+                                {% for q in questions %}
+                                    <!--
+                                        {% widthratio forloop.counter0 3 3 as val %}
+                                    -->
+                                    <a href="{% url 'view_single_question' q.parent_class.id q.id %}" class="kill-decor">
+                                        <div class="well well-sm searchQuestion{{ val }}">
+                                            <p class="text-primary"> <strong> {{q.question_title}} </strong></p>
+                                            <p class="searchwrap text-muted"> {{ q.text|truncatechars:300 }} </p>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                            
+                            <div id="answers" class="tab-pane fade {% if answer_results != 0 and school_results == 0 and class_results == 0 and question_results == 0 %} in active {% endif %}">
+                                {% for a in answers %}
+                                    <!--
+                                        {% widthratio forloop.counter0 3 3 as val %}
+                                    -->
+                                    <a href="{% url 'view_single_question' a.question.parent_class.id a.question.id %}" class="kill-decor">
+                                        <div class="well well-sm searchAnswers{{ val }}">
+                                            <p class="text-primary"> <b>Question:</b> {{ a.question.question_title }} </p>
+                                            <p class="text-muted"> Answer: {{ a.text }} </p>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div><!-- Tab content -->
+                    </div><!-- panel-body -->
+                </div><!--panel-->
+            
+                {% if class_results == 0 %}
+                    <div class="row">
+                        <div><h4><span class="label label-warning kill-space">There were no classes that matched your search.</span></h4></div>
+                    </div>
+                {% endif %}
+                {% if question_results == 0 %}
+                    <div class="row">
+                        <div><h4><span class="label label-warning kill-space">There were no questions that matched your search.</span></h4></div>
+                    </div>
+                {% endif %}
+                {% if answer_results == 0 %}
+                    <div class="row">
+                        <div><h4><span class="label label-warning kill-space">There were no answers that matched your search.</span></h4></div>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <h3>
+                        <span class="label label-primary kill-space"> 
+                            <span class="badge search-badge"> {{ total_results }} </span>
+                            search results for "{{ query }}"
+                        </span>
+                    </h3>
+                </div>
+                <br>
+            {% endif %}
+        </div>
+    </div>
+</body>
+{% endblock %}

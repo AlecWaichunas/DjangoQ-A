@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class='main_content'>
+        <div class='container'>
+            <br>
+            <br>
+            <br>
+            <form action='' method='POST'> {% csrf_token %}
+                <div class="text-center">
+                    <label class="btn btn-info" style="margin-right: -15px;"> Join {{class_name}}?
+    				    <span class="badge">
+    					    <input class="class-checkbox" type='checkbox' id="question-anon" name='confirm'></input>
+    					     <div class="class-checkmark  glyphicon glyphicon-ok"></div>
+    				    </span>
+    			    </label>
+                    <input class="btn btn-primary" type='submit' value='Submit'/>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+{% endblock %}

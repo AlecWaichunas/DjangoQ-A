@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+         <a href="/c/{{ single_class.id }}">
+             <button class="btn btn-primary">
+                 <span class="glyphicon glyphicon-arrow-left"></span>
+                 Back to {{ single_class.name }}
+             </button>
+        </a>
+    </div>
+    <br>
+    <div class="row">
+        <div class="panel panel-primary"> 
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="question-left-align">
+                        <h3> {{discussion.title}} </h3>
+                        <h3 class="kill-padding kill-margin"><small> <b> Submitted by {% if discussion.is_anon %} anonymous </b></small></h3> {% else %} {{ discussion.creator }} </b></small></h3> {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="question-left-align question-right-align"><p> {{ discussion.text }} </p></div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <p>Submitted {{ discussion.date_created|timesince }} ago</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submitting an answer -->
+
+    <div class="row">
+        {% if not is_member %}
+            <button type="button" class="btn btn-warning dropdown-toggle col-xs-12 disabled"> 
+                Join class to reply
+                <span class="glyphicon glyphicon-triangle-bottom"></span>
+            </button>
+        {% else %}
+            <button type="button" class="btn btn-warning dropdown-toggle col-xs-12" id="answer_button"> 
+                Reply
+                <span class="glyphicon glyphicon-triangle-bottom"></span>
+            </button>
+        {% endif %}
+        <div class="container" id="answertext">
+            <form action='' method='POST'> {% csrf_token %}
+                
+                <div class="row">
+                    <textarea class="answer-area col-xs-12" type="text" name="reply_text" placeholder="Type your reply" maxlength="5000"></textarea>
+                </div>
+                <div class="row text-right">
+                    <label class="btn btn-info"> reply anonymously?
+        				<span class="badge">
+        					 <input class="class-checkbox" type='checkbox' name='is_anon' checked></input>
+        					 <div class="class-checkmark  glyphicon glyphicon-ok"></div>
+        					    
+        				</span>
+    			    </label>
+                </div>
+                <div class="row text-right">
+                    <input class='btn btn-default' type='submit' id="replySubmit" value='Submit your reply'/>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- For errors in voting -->
+    {% if messages %}
+        {% for message in messages %}
+            <div{% if message.tags %} class="alert alert-danger text-center"{% endif %}>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+   <div class="row"><br></div>
+    
+    {% if replies.exists %}
+    {% for reply in replies %}
+        <div class="row panel panel-info">
+            <div class="panel-body">
+                <div class="row question-left-align question-right-align">
+                    <p>{{ reply.text }}</p>
+                </div>
+                <br>
+            </div>
+            <div class="panel-footer">
+                <p style="margin-bottom: 0"><small>Submitted {{ reply.date_created|timesince }} ago</small><p>
+                {% if reply.is_anon %}
+                    <h3 style="margin-top: -15px"><small><strong>By Anonymous</strong></small></h3>
+                {% else %}
+                    <h3 style="margin-top: -15px"><small><strong>By {{ reply.replier }} </strong></small></h3>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+    {% else %}
+    <div class="container text-center">
+        <h3>No replies yet</h3>
+    </div>
+    {% endif %}
+    
+    <!--TODO Add link to go back to class view-->
+    <div class="row">
+         <a href="/c/{{ single_class.id }}">
+             <button class="btn btn-primary">
+                 <span class="glyphicon glyphicon-arrow-left"></span>
+                 Back to {{ single_class.name }}
+             </button>
+            </a>
+    </div>
+    <br>
+    </div>
+    {% endblock %}

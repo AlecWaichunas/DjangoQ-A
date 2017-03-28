@@ -1,0 +1,32 @@
+<div class="row text-center">
+  	<label><h3> Your recent classes </h3></label>
+  </div>
+  <div class="row">
+  	<div class="col-xs-1" id="left-scroll-1">
+  		<button class="btn btn-primary home-left">
+  			<span class="glyphicon glyphicon-menu-left"></span>
+  		</button>
+  	</div>
+  	<div class="col-xs-10 row-alec" id="scroll-1">
+  		{% for class in classes_set %}
+  			<a href="{% url 'class_view' class.id %}">
+  				<button class="btn btn-alec">
+  					<div class="row text-center">
+  						<h5 class="text-primary"> {{ class.name }} </h5>
+  					</div>
+  					<div class="row text-center">
+  						<p class="text-success"><b>Members: {{ class.members.count }}</b></p>
+  					</div>
+  					<div class="row">
+  						<p class="text-info"> {{ class.description|truncatechars:100 }} </p>
+  					</div>
+  				</button>
+  			</a>
+  		{% endfor %}
+  	</div>
+  	<div class="col-xs-1" id="right-scroll-1">
+  		<button class="btn btn-primary home-right">
+  			<span class="glyphicon glyphicon-menu-right"></span>
+  		</button>
+  	</div>
+</div>

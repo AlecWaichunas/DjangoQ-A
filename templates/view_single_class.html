@@ -1,0 +1,416 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    {% if single_class %}
+
+            {% if error_message %}
+            <div class="alert alert-danger text-center">
+                {{ error_message }}
+            </div>
+            {% elif message %}
+            <div class="alert alert-success text-center">
+                {{ message }}
+            </div>
+            {% endif %}
+            <div class="panel panel-primary class-panel">
+                <div class="panel-heading">
+                    <div class="row text-center">
+                        <h2> {{ single_class.name }}</h2>
+                                {% if single_class.school.school_name %}<p><a class="text-white highlight-darkgrey" href="{% url 'view_single_school' single_class.school.id %}"><bold>{{ single_class.school.school_name }}</bold></a></p> {% endif %}
+                        {% if is_joined and single_class.is_private %}
+                            <div class="class-code question-right-align question-top-align">
+                                <p> class code <span class="badge"><b>{{ single_class.code }}</b></span></p>
+                            </div>
+                        {% endif %}
+                        <h5 class="text-muted">by {{ single_class.owner.user.username }}</h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row question-left-align question-right-align">
+                        <p>{{ single_class.description }}</p>
+                    </div>
+                    <div class="row text-right question-right-align">
+                        <h4><span class="badge"><b>{{ single_class.members.count }}</b></span> members</h4>
+                    </div>
+                    <!-- Invite user code -->
+                    {% if is_joined and single_class.is_private %}
+                        <div class="row text-right question-right-align">
+                            <!--Invite User -->
+                            <button class="btn btn-success question-bot-align" type="button" data-toggle="modal" data-target="#inviteModal">Invite User</button>
+                            <div class="modal fade" id="inviteModal" role="dialog">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title text-center">Invite user</h4>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <form action='' method='POST'> {% csrf_token %}
+                                                <input type='text' name='search_user' placeholder='Username'/>
+                                                <button class="btn btn-primary" type='submit' name='submit_user'>Invite User</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--</a>-->
+                        </div>
+                    {% endif %}
+                    <!-- Join or leave class button -->
+                    <div class="row text-right question-right-align">
+                        {% if single_class.is_private and not is_joined %}
+                        
+                        {% else %}
+                            {% if not is_owner %}
+                            <a class="createQuestionText" href="{% url 'join_public_class' single_class.id %}">
+                                {% if not is_joined %}
+                                    <button class="btn btn-success question-bot-align" type="button">Join {{ single_class.name }}</button>
+                                {% else %}
+                                    <!-- Need to add button for owner to delete the class instead of leaving it -->
+                                    <!--if user_profile.user.username == single_class.owner.username %}-->
+                                        <button class="btn btn-warning question-bot-align" type="button">Leave {{ single_class.name }}</button>
+                                    <!-- else %}-->
+                                        <!--<button class="btn btn-danger question-bot-align" type="button">Delete Class {{ single_class.name }}</button>-->
+                                    <!-- endif %}-->
+                                {% endif %}
+                            {% endif %}
+                            </a>
+                        {% endif %}
+                        
+                    </div>
+                    {% if is_joined %}
+                        <div class="row question-right-align question-left-align" id="createQuestionText">
+                                <a class="" href="{% url 'ask_question' single_class.id %}">
+                                    <button type="button" class="btn btn-primary col-xs-12">
+                                        Ask a question
+                                    </button>
+                                </a>
+                        </div>
+                        <div class="row question-right-align question-left-align" id="createDiscussionText">
+                                <a class="" href="{% url 'create_discussion' single_class.id %}">
+                                    <button type="button" class="btn btn-info col-xs-12">
+                                        Submit a discussion
+                                    </button>
+                                </a>
+                        </div>
+                        <div class="row question-right-align question-left-align" id="createAssignment">
+                                <a class="" href="{% url 'post_assignment' single_class.id %}">
+                                    <button type="button" class="btn btn-success col-xs-12">
+                                        Submit Assignment
+                                    </button>
+                                </a>
+                        </div>
+                    {% else %}
+                        {% if single_class.is_private %}
+                            <label class="label label-warning class-codetext col-xs-12">
+                                Join with class code
+                                <span class="badge kill-background kill-padding">
+                                    <form role="form" action='' method='POST'>{% csrf_token %}
+                                        <input type="text" name="class_code"/>
+                                        <button class="btn btn-warning kill-padding" name="submit_code">
+                                            <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                                        </button>
+                                    </form>
+                                </span>
+                            </label>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        <!-- Class Tabs -->
+            <ul class="nav nav-pills centered hidden-xs hidden-sm">
+                <li class="active questionTab"><a class="blue-border" href="#questionsTab" data-toggle="pill"><h4>Questions</h4></a></li>
+                <li class="assignmentTab"><a class="blue-border" href="#assignmentTab" data-toggle="pill"><h4>Assignments</h4></a></li>
+                <li class="discussionTab"><a class="blue-border" href="#discussionTab" data-toggle="pill"><h4>Discussion</h4></a></li>
+            </ul>
+            <ul class="nav nav-pills nav-justified centered visible-xs visible-sm">
+                <li class="active questionTab"><a class="blue-border" href="#questionsTab" data-toggle="pill"><h4>Questions</h4></a></li>
+                <li class="assignmentTab"><a class="blue-border" href="#assignmentTab" data-toggle="pill"><h4>Assignments</h4></a></li>
+                <li class="discussionTab"><a class="blue-border" href="#discussionTab" data-toggle="pill"><h4>Discussion</h4></a></li>
+            </ul>
+        <div class="tab-content">
+            
+            <!-- Questions -->
+            <div class="tab-pane active" id="questionsTab">
+                    <br>
+                    {% if class_questions %}
+                         <div class="btn-group">
+                            <select id='select' class="btn btn-info select-class dropdown-toggle">
+                                <!--<option value="todays-questions">Today's Questions</option>-->
+                                <option value='recent-questions'>Most Recent</option><!-- Default -->
+                                <option value='unanswered-questions'>Unanswered</option>
+                                <option value='most-helpful'>Most Helpful</option>
+                                <option value='best-answers'>Best Answers</option>
+                                <option value='all-questions'>All Questions</option>
+                                <span class="glyphicon glyphicon-triangle-bottom"></span>
+                            </select>
+                        </div>
+                        <br>
+                        <br>
+                        
+                        
+                        <div id='all-questions' class='hidden-group'>
+                            {% for question in all_questions %}
+                                <a href="{% url 'view_single_question' single_class.id question.id %}">
+                                    <button class="well well-lg class-question">
+                                        <div class="col-xs-7 col-md-9">
+                                            <div class="row text-left text-primary kill-padding">
+                                                <h4><strong>{{ question.question_title|truncatechars:100 }}</strong></h4>
+                                            </div>
+                                            <div class="row text-left" style="color: black;">    
+                                                <p class="searchwrap">{{ question.question_text|truncatechars:400}}</p>
+                                            </div>
+                                            <div class="row text-left text-muted">
+                                                <p>Created by: {% if question.is_anon %} anonymous {% else %} {{ question.asker }} {% endif %}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-5 col-md-3 bg-info question-info-box">
+                                            <br>
+                                            <div class="row text-center text-warning">
+                                                <p><small><b>{{ question.views }} views</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-info">
+                                                <p><small><b>{{ question.points }} found helpful</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-success">    
+                                                <p>{{ question.answers.count }} answers</p>
+                                            </div>
+                                            <div class="row text-center text-muted">
+                                                <p><small>Submitted {{ question.date_created|timesince }} ago</small></p>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        
+                        
+                        
+                        <div id='recent-questions' class='hidden-group'>
+                            {% for question in class_questions %}
+                                <a href="{% url 'view_single_question' single_class.id question.id %}">
+                                    <button class="well well-lg class-question">
+                                        <div class="col-xs-7 col-md-9">
+                                            <div class="row text-left text-primary kill-padding">
+                                                <h4><strong>{{ question.question_title|truncatechars:100 }}</strong></h4>
+                                            </div>
+                                            <div class="row text-left" style="color: black;">    
+                                                <p class="searchwrap">{{ question.question_text|truncatechars:400}}</p>
+                                            </div>
+                                            <div class="row text-left text-muted">
+                                                <p>Created by: {% if question.is_anon %} anonymous {% else %} {{ question.asker }} {% endif %}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-5 col-md-3 bg-info question-info-box">
+                                            <br>
+                                            <div class="row text-center text-warning">
+                                                <p><small><b>{{ question.views }} views</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-info">
+                                                <p><small><b>{{ question.points }} found helpful</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-success">    
+                                                <p>{{ question.answers.count }} answers</p>
+                                            </div>
+                                            <div class="row text-center text-muted">
+                                                <p><small>Submitted {{ question.date_created|timesince }} ago</small></p>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        
+                        <div id='unanswered-questions' class='hidden-group'>
+                            {% for question in unanswered %}
+                                <a href="{% url 'view_single_question' single_class.id question.id %}">
+                                    <button class="well well-lg class-question">
+                                        <div class="col-xs-7 col-md-9">
+                                            <div class="row text-left text-primary kill-padding">
+                                                <h4><strong>{{ question.question_title|truncatechars:100 }}</strong></h4>
+                                            </div>
+                                            <div class="row text-left" style="color: black;">    
+                                                <p class="searchwrap">{{ question.question_text|truncatechars:400}}</p>
+                                            </div>
+                                            <div class="row text-left text-muted">
+                                                <p>Created by: {% if question.is_anon %} anonymous {% else %} {{ question.asker }} {% endif %}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-5 col-md-3 bg-info question-info-box">
+                                            <br>
+                                            <div class="row text-center text-warning">
+                                                <p><small><b>{{ question.views }} views</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-info">
+                                                <p><small><b>{{ question.points }} found helpful</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-success">    
+                                                <p>{{ question.answers.count }} answers</p>
+                                            </div>
+                                            <div class="row text-center text-muted">
+                                                <p><small>Submitted {{ question.date_created|timesince }} ago</small></p>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        
+                        <div id='most-helpful' class='hidden-group'>
+                            {% for question in most_helpful %}
+                                <a href="{% url 'view_single_question' single_class.id question.id %}">
+                                    <button class="well well-lg class-question">
+                                        <div class="col-md-9 col-xs-7">
+                                            <div class="row text-left text-primary kill-padding">
+                                                <h4><strong>{{ question.question_title|truncatechars:100 }}</strong></h4>
+                                            </div>
+                                            <div class="row text-left" style="color: black;">    
+                                                <p class="searchwrap">{{ question.question_text|truncatechars:400}}</p>
+                                            </div>
+                                            <div class="row text-left text-muted">
+                                                <p>Created by: {% if question.is_anon %} anonymous {% else %} {{ question.asker }} {% endif %}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xs-5 bg-info question-info-box">
+                                            <br>
+                                            <div class="row text-center text-warning">
+                                                <p><small><b>{{ question.views }} views</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-info">
+                                                <p><small><b>{{ question.points }} found helpful</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-success">    
+                                                <p>{{ question.answers.count }} answers</p>
+                                            </div>
+                                            <div class="row text-center text-muted">
+                                                <p><small>Submitted {{ question.date_created|timesince }} ago</small></p>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        
+                        <div id='best-answers' class='hidden-group'>
+                            {% for question in best_answers %}
+                                <a href="{% url 'view_single_question' single_class.id question.id %}">
+                                    <button class="well well-lg class-question">
+                                        <div class="col-md-9 col-xs-7">
+                                            <div class="row text-left text-primary kill-padding">
+                                                <h4><strong>{{ question.question_title|truncatechars:100 }}</strong></h4>
+                                            </div>
+                                            <div class="row text-left" style="color: black;">    
+                                                <p class="searchwrap">{{ question.question_text|truncatechars:400}}</p>
+                                            </div>
+                                            <div class="row text-left text-muted">
+                                                <p>Created by: {% if question.is_anon %} anonymous {% else %} {{ question.asker }} {% endif %}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xs-5 bg-info question-info-box">
+                                            <br>
+                                            <div class="row text-center text-warning">
+                                                <p><small><b>{{ question.views }} views</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-info">
+                                                <p><small><b>{{ question.points }} found helpful</b></small></p>
+                                            </div>
+                                            <div class="row text-center text-success">    
+                                                <p>{{ question.answers.count }} answers</p>
+                                            </div>
+                                            <div class="row text-center text-muted">
+                                                <p><small>Submitted {{ question.date_created|timesince }} ago</small></p>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </a>
+                            {% endfor %}
+                        </div>
+
+                    {% else %}
+                        <h3 class="text-center">No questions yet.</h3>
+                    {% endif %}
+            </div>
+            
+            <!-- Assignments-->
+            <div class="tab-pane" id="assignmentTab">
+                <br>
+                {% if class_assignments %}
+                    <!--<div class="btn-group">-->
+                    <!--    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                    <!--        {{ assignment_dates.0|date:"N dS Y" }} <span class="caret"></span>-->
+                    <!--    </button>-->
+                    <!--    <ul class="dropdown-menu assignment-dropdown">-->
+                    <!--         {% for dates in assignment_dates %}-->
+                    <!--             <li><a href="#{{ dates|date:"SHORT_DATE_FORMAT" }}">{{ dates|date:"N dS Y" }} </a></li>-->
+                    <!--         {% endfor %}-->
+                    <!--    </ul>-->
+                    <!--</div>-->
+                    <!--<br>-->
+                    <!--<br>-->
+                    {% for assignment in class_assignments %}
+                        <div class="well well-lg">
+                            <div class="row">
+                                <h3><strong>{{ assignment.assignment }}</strong></h3>
+                            </div>
+                            <div class="row">
+                                <p>{{ assignment.details }}</p>
+                            </div>
+                            <div class="row">
+                                <p><b>Created by: {% if assignment.is_anon %} anonymous {% else %} {{ assignment.poster }} {% endif %}</b></p>
+                            </div>
+                            <div class="row">
+                                <p><b>Submitted {{ assignment.date_created|timesince }} ago</b></p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h3 class="text-center">No assignments yet..</h3>
+                {% endif %}
+            </div>
+            <!-- DISCUSSION -->
+            <div class="tab-pane" id="discussionTab">
+                <br>
+                {% if class_discussions %}
+                    {% for discussion in class_discussions %}
+                        <a href="{% url 'view_single_discussion' single_class.id discussion.id %}">
+                            <div class=row"">
+                                <button class="well well-lg class-question">
+                                    <div class="col-md-9 col-xs-7">
+                                        <div class="row text-left text-primary kill-padding">
+                                            <h4><strong> {{ discussion.title|truncatechars:100 }}</strong></h4>
+                                        </div>
+                                        <div class="row text-left" style="color: black;">    
+                                            <p class="searchwrap">{{ discussion.text|truncatechars:400 }}</p>
+                                        </div>
+                                        <div class="row text-left text-muted">
+                                            <p>Created by: {% if discussion.is_anon %} anonymous {% else %} {{ discussion.creator }} {% endif %}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-xs-5 bg-info question-info-box">
+                                        <br>
+                                        <div class="row text-center text-warning">
+                                            <p><small><b>Views: {{ discussion.views }}</b></small></p>
+                                        </div>
+                                        <div class="row text-center text-success">
+                                            <p><small><b>Replies: {{ discussion.replies.count }}</b></small></p>
+                                        </div>
+                                        <div class="row text-center text-muted">
+                                            <p><small>Submitted {{ discussion.date_created|timesince }} ago</small></p>
+                                        </div>
+                                    </div>
+                                </button>
+                                                            
+                            </div>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <h3 class="text-center">No discussion yet.</h3>
+                {% endif %}
+            </div>
+        </div>
+    {% elif error %}
+        <h1>{{ error }}</h1>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% include 'header.html' %}
+<html lang="en">
+<style type="text/css">
+    body{
+    background-image: url('/static/imgs/triangular.png');
+    /*background-color: #448AFF;*/
+}
+</style>
+    {% block header %}
+    {% endblock %}
+
+<body>
+    <div class="container">
+    <div class="jumbotron" id="login-form">
+
+    <form class="form-signin" method='POST'> {% csrf_token %}
+        <h2 class="text-center">Login</h2>
+        <!--{% if messages %}-->
+        <!--{% for message in messages %}-->
+        <!--    <div{% if message.tags %} class="alert alert-danger text-center"{% endif %}>-->
+        <!--    {{ message }}-->
+        <!--</div>-->
+        <!--{% endfor %}-->
+        <!--{% endif %}-->
+        
+        {% if error_message %}
+            <div class="alert alert-danger text-center">
+                {{ error_message }}
+            </div>
+        {% elif message %}
+            <div class="alert alert-success text-center">
+                {{ message }}
+            </div>
+        {% endif %}
+        
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input name='username' type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input name='password' type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input name="remember_me" type="checkbox" value="remember-me" checked> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        
+        <a href="{% url 'forgot_password' %}">Forgot your password?</a>
+      </form>
+
+    </div> <!-- /container -->
+    </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="/static/css/bootstrap.min.js"></script>
+</body>
+
+</html>

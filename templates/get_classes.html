@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	{% for current in classes_set %}
+		<p><strong>{{ current.name }}</strong>: {{ current.description }}</p>
+	{% endfor %}
+{% endblock %}

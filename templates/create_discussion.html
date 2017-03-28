@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="jumbotron">
+    <h2 class="text-center">Create a discussion</h2>
+        
+    {% if error_message %}
+        <div class="alert alert-danger text-center">{{error_message}}</div>
+    {% endif %}
+        
+    <form class="horizontal-form" action='' method='POST'> {% csrf_token %}
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <label for="question_title"><h4><small>Title</small></h4></label>
+        </div>
+        <div class="row pull-center">
+            <div class="col-xs-2"></div>
+            <input class="col-xs-8" type='text' name='discussion_title' maxlength="60"/>
+        </div>
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <label for="questionarea"><h4><small>Text here</small></h4></label>
+        </div>
+        <div class="row pull-center">
+            <div class="col-xs-2"></div>
+            <textarea class="col-xs-8 question-area" id="questionarea" type='textarea' name='discussion_text' maxlength="5000"></textarea>
+        </div>
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <label class="text-right col-xs-8" style="margin-right: -15px;" for="question_anon" id="askCharacterAmount">Character count: 0</label>
+        </div>
+        <div class="row">
+            <div class="col-xs-2"></div>
+            <div class="col-xs-8 text-right">
+                <label class="btn btn-info" style="margin-right: -15px;"> create anonymously?
+    				<span class="badge">
+    					 <input class="class-checkbox" type='checkbox' id="question-anon" name='is_anon' checked></input>
+    					 <div class="class-checkmark  glyphicon glyphicon-ok"></div>
+    					    
+    				</span>
+    			</label>
+			</div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-2"></div>
+             <div class="col-xs-8 text-right">
+                 <button class="btn btn-primary" type='submit' value='Submit Discussion' style="margin-right: -15px;">
+                     Submit Discussion
+                 </button>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% include 'header.html' %}
+<html lang="en">
+<style type="text/css">
+    body{
+        background-image: url('/static/imgs/triangular.png');
+        /*background-color: #448AFF;*/
+    }
+</style>
+    {% block header %}
+    {% endblock %}
+
+<body>
+    <div class='container'>
+        {% if not registered %}
+            <div class="jumbotron" id="login-form">  
+                <form class='form-signin' action='' method='post'>
+                    {% csrf_token %}
+                    <h2 class="text-center">Register</h2>
+                    {% if error_messages %}
+                    <div class="alert alert-danger text-center">{{ error_messages }}</div>
+                    {% endif %}
+                    <input class='form-control' type='email' name='email' placeholder='Email'/>
+                    <input class='form-control' type='text' name='username' placeholder='Username'/>
+                    <input class='form-control' type='password' name='password' placeholder='Password'/>
+                    <!--<input class='form-control' type='text' name='first_name' placeholder='First-Name'/>-->
+                    <!--<input class='form-control' type='text' name='last_name' placeholder='Last-Name'/>-->
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name='conditions_check' value="remember-me">Agree to <a target="_blank" href="{% url 'terms_of_service' %}">Terms and Conditions</a>
+                        </label>
+                    </div>
+                    <!-- <input type='password' name='password_re-enter' placeholder='Re-Enter Password'/> -->
+        
+                    <input class='btn btn-lg btn-primary btn-block' type='submit' value='submit'/>
+                </form>
+            </div>
+        {% else %}
+            <div class ="jumbotron text-center">
+            <h1>Thank you for registering</h1>
+            <p>Check your email for verification url</p>
+            </div>
+        {% endif %}
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/static/css/bootstrap.min.js"></script>
+</body>
